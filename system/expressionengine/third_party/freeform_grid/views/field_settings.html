@@ -1,0 +1,70 @@
+<style type="text/css">
+#grid {
+    overflow:hidden;
+    width:100%;
+}
+#grid div {
+    float:left;
+    height:30px;
+    width:155px;
+}
+div.column_heading a {
+    line-height:30px;
+    margin:0 5px 0 0;
+}
+#grid input {
+    width:120px !important;
+}
+#column_heading_add a {
+    font-size:18px;
+    line-height:30px;
+}
+#column_heading_add a:hover,
+div.column_heading a:hover {
+    text-decoration:none !important;
+}
+</style>
+<div id="grid"></div>
+<input type="hidden" id="column_headers" name="column_headers" value='<?=$column_headers;?>'>
+<script type="text/ejs" id="column_heading_ejs">
+<div class="column_heading">
+    <a href=""><img src="<?=$delete_button_src;?>"></a><input type="text" name="column_headings[]" value="{0}">
+</div>
+</script>
+<script type="text/ejs" id="column_heading_add_ejs">
+<div id="column_heading_add">
+    <a href=""><img src="<?=$add_button_src;?>"></a>
+</div>
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+    var $master_field = $('#column_headers'),
+        $grid         = $('#grid');
+
+    Solspace.Grid.settings.init({
+        el: $grid,
+        tmpl: $('#column_heading_ejs').html(),
+        add_tmpl: $('#column_heading_add_ejs').html(),
+        headings: JSON.parse($master_field.val()),
+        master_field: $master_field
+    });
+
+    // Save field values
+    $grid.on('change', 'input[type="text"]', function(event) {
+        Solspace.Grid.settings.update();
+    })
+    // Add a field
+    .on('click', '#column_heading_add a', function(event) {
+        event.preventDefault();
+        var code = Solspace.Grid.settings.tmpl.format('');
+        $(code).insertBefore('#column_heading_add');
+        Solspace.Grid.settings.fields = $grid.find('input[type="text"]');
+    })
+    // Remove a field
+    .on('click', 'div.column_heading a', function(event) {
+        event.preventDefault();
+        $(this).parent('div').remove();
+        Solspace.Grid.settings.update();
+    });
+});
+</script>

@@ -1,0 +1,23 @@
+<style type="text/css">
+#mini_grid_table {
+}
+#mainContent .pageContents table.mainTable #mini_grid_table td,
+#mainContent .pageContents table.mainTable #mini_grid_table th {
+    border:0 !important;
+    padding:2px !important;
+}
+</style>
+<table id="mini_grid_table">
+    <tr>
+<?php foreach($headers as $header): ?>
+        <td><strong><?=$header->heading;?></strong></td>
+<?php endforeach; ?>
+    </tr>
+<?php foreach($row_data as $row): ?>
+    <tr>
+    <?php foreach($row as $cell): ?>
+        <td><?=$cell;?></td>
+    <?php endforeach; ?>
+    </tr>
+<?php endforeach; ?>
+</table>

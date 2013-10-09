@@ -1,0 +1,64 @@
+<style type="text/css">
+#grid {
+    overflow:hidden;
+    width:100%;
+}
+#grid td {
+    border:0 !important;
+    vertical-align:middle !important;
+}
+</style>
+<table id="grid"></table>
+<input type="hidden" id="grid_rows" name="<?=$name;?>" value='<?=$rows;?>'>
+<input type="button" id="grid_add_row" class="submit" value="Add Row">
+<script type="text/ejs" id="heading_ejs">
+<th>{0}</th>
+</script>
+<script type="text/ejs" id="cell_ejs">
+<td><input type="text" name="{0}[]" value="{1}"></td>
+</script>
+<script type="text/ejs" id="delete_row_ejs">
+<td><a href="" class="grid_delete_row"><img src="<?=$delete_button_src;?>"></a></td>
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+    var $master_field = $('#grid_rows'),
+        $grid         = $('#grid');
+
+    Solspace.Grid.display.init({
+        el: $grid,
+        master_field: $master_field,
+        headings: <?=$headers;?>,
+        minrows: <?=$minrows;?>,
+        maxrows: <?=$maxrows;?>,
+        rows: JSON.parse($master_field.val()),
+        heading_tmpl: $('#heading_ejs').html(),
+        cell_tmpl: $('#cell_ejs').html(),
+        delete_row_tmpl: $('#delete_row_ejs').html()
+    });
+
+    $('#grid_add_row').on('click', function(event) {
+        event.preventDefault();
+        if (Solspace.Grid.display.num_rows < Solspace.Grid.display.maxrows) {
+            Solspace.Grid.display.build_rows([{}]);
+        }
+        if (Solspace.Grid.display.num_rows == Solspace.Grid.display.maxrows) {
+            $(this).hide();
+        }
+    });
+
+    $grid.on('click', 'a.grid_delete_row', function(event) {
+        event.preventDefault();
+        if (Solspace.Grid.display.num_rows > Solspace.Grid.display.minrows) {
+            $(this).closest('tr').remove();
+            Solspace.Grid.display.update();
+        }
+        if (Solspace.Grid.display.num_rows < Solspace.Grid.display.maxrows) {
+            $('#grid_add_row').show();
+        }
+    })
+    .on('change', 'input[type="text"]', function(event) {
+        Solspace.Grid.display.update();
+    })
+});
+</script>
