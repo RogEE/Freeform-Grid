@@ -22,7 +22,7 @@
 
         update: function() {
             var my = this;
-            this.fields   = this.el.find('input[type="text"]');
+            this.fields   = this.el.find('input');
             this.headings = [];
             $(this.fields).each(function(i,field) {
                 my.headings.push({heading: $(field).val()});
@@ -55,7 +55,7 @@
             this.rows       = [];
             table_rows.each(function(i, row) {
                 var data = [],
-                    cells = $(row).find('input[type="text"]');
+                    cells = $(row).find('input');
                 cells.each(function(i, cell) {
                     data.push($(cell).val());
                 });
