@@ -8,57 +8,58 @@
     vertical-align:middle !important;
 }
 </style>
-<table id="grid"></table>
-<input type="hidden" id="grid_rows" name="<?=$name;?>" value='<?=$rows;?>'>
-<input type="button" id="grid_add_row" class="submit" value="Add Row">
-<script type="text/ejs" id="heading_ejs">
+<table id="grid_<?=$id;?>"></table>
+<input type="hidden" id="grid_rows_<?=$id;?>" name="<?=$name;?>" value='<?=$rows;?>'>
+<input type="button" id="grid_add_row_<?=$id;?>" class="submit" value="Add Row">
+<script type="text/ejs" id="heading_ejs_<?=$id;?>">
 <th>{0}</th>
 </script>
-<script type="text/ejs" id="cell_ejs">
+<script type="text/ejs" id="cell_ejs_<?=$id;?>">
 <td><input type="text" name="{0}[]" value="{1}"></td>
 </script>
-<script type="text/ejs" id="delete_row_ejs">
+<script type="text/ejs" id="delete_row_ejs_<?=$id;?>">
 <td><a href="" class="grid_delete_row"><img src="<?=$delete_button_src;?>"></a></td>
 </script>
 <script type="text/javascript">
 $(document).ready(function() {
-    var $master_field = $('#grid_rows'),
-        $grid         = $('#grid');
+    var $master_field = $('#grid_rows_<?=$id;?>'),
+        $grid         = $('#grid_<?=$id;?>'),
+        solspace = jQuery.extend(true, {}, Solspace);
 
-    Solspace.Grid.display.init({
+    solspace.Grid.display.init({
         el: $grid,
         master_field: $master_field,
         headings: <?=$headers;?>,
         minrows: <?=$minrows;?>,
         maxrows: <?=$maxrows;?>,
         rows: JSON.parse($master_field.val()),
-        heading_tmpl: $('#heading_ejs').html(),
-        cell_tmpl: $('#cell_ejs').html(),
-        delete_row_tmpl: $('#delete_row_ejs').html()
+        heading_tmpl: $('#heading_ejs_<?=$id;?>').html(),
+        cell_tmpl: $('#cell_ejs_<?=$id;?>').html(),
+        delete_row_tmpl: $('#delete_row_ejs_<?=$id;?>').html()
     });
 
-    $('#grid_add_row').on('click', function(event) {
+    $('#grid_add_row_<?=$id;?>').on('click', function(event) {
         event.preventDefault();
-        if (Solspace.Grid.display.num_rows < Solspace.Grid.display.maxrows) {
-            Solspace.Grid.display.build_rows([{}]);
+        if (solspace.Grid.display.num_rows < solspace.Grid.display.maxrows) {
+            solspace.Grid.display.build_rows([{}]);
         }
-        if (Solspace.Grid.display.num_rows == Solspace.Grid.display.maxrows) {
+        if (solspace.Grid.display.num_rows == solspace.Grid.display.maxrows) {
             $(this).hide();
         }
     });
 
     $grid.on('click', 'a.grid_delete_row', function(event) {
         event.preventDefault();
-        if (Solspace.Grid.display.num_rows > Solspace.Grid.display.minrows) {
+        if (solspace.Grid.display.num_rows > solspace.Grid.display.minrows) {
             $(this).closest('tr').remove();
-            Solspace.Grid.display.update();
+            solspace.Grid.display.update();
         }
-        if (Solspace.Grid.display.num_rows < Solspace.Grid.display.maxrows) {
-            $('#grid_add_row').show();
+        if (solspace.Grid.display.num_rows < solspace.Grid.display.maxrows) {
+            $('#grid_add_row_<?=$id;?>').show();
         }
     })
     .on('change', 'input[type="text"]', function(event) {
-        Solspace.Grid.display.update();
+        solspace.Grid.display.update();
     })
 });
 </script>
