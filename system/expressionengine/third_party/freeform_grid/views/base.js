@@ -87,7 +87,7 @@
 
     String.prototype.format = function() {
         var args = arguments;
-        return this.replace(/{(<?php if (REQ != 'CP') echo '\\';?>\d+)}/g, function(match, number) {
+        return this.replace(/{(\d+)}/g, function(match, number) {
             return typeof args[number] != 'undefined' ? args[number] : match;
         });
     };
