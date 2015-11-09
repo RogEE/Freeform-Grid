@@ -312,6 +312,35 @@ class Freeform_grid_freeform_ft extends Freeform_base_ft {
     	return TRUE;
     }
     // END validate
+    
+    /**
+  	 * display_email_data
+  	 *
+  	 * formats data for email notifications
+  	 *
+  	 * @access	public
+  	 * @param 	string 	data from table for email output
+  	 * @param 	object 	instance of the notification object
+  	 * @return	string 	output data
+  	 */
+  
+  	public function display_email_data ($data, $notification_obj = null)
+  	{
+  		
+  		$result = array();
+  		
+  		$rows = json_decode($data);
+  		
+  		foreach ($rows as $row) {
+    		$result[] = implode(', ', $row);
+  		}
+  		
+  		$output = "\n".implode("\n", $result);
+  
+  		return $this->encode_ee(entities_to_ascii($output));
+  		
+  	}
+  	//END display_email_data
 
     // --------------------------------------------------------------------
 
