@@ -58,7 +58,7 @@ $(document).ready(function() {
             $('#grid_add_row_<?=$id;?>').show();
         }
     })
-    .on('change', 'input[type="text"]', function(event) {
+    .on('change', 'input', function(event) {
         solspace.Grid.display.update();
     })
 });
