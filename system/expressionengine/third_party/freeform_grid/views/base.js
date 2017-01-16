@@ -34,22 +34,25 @@
     Solspace.Grid.display = {
         init: function(options) {
             $.extend(this, options);
-            this.row_base = $('<tr></tr>');
-            var row_code = this.row_base.clone();
-                my = this;
-            // Build our headings
-            row_code.append($('<th></th>'));
-            $(this.headings).each(function(i,n) {
-                row_code.append(my.heading_tmpl.format(n.heading));
-            });
-            this.el.append(row_code);
-
+            if (!this.vertical_fields) {
+	            this.row_base = $('<tr class="freeform-grid-row"></tr>');
+	            var row_code = $('<tr class="freeform-grid-heading"></tr>');;
+	                my = this;
+	            // Build our headings
+	            row_code.append($('<th></th>'));
+	            $(this.headings).each(function(i,n) {
+	                row_code.append(my.heading_tmpl.format(n.heading));
+	            });
+	            this.el.append(row_code);
+		     } else {
+		     	this.row_base = $('<div class="freeform-grid-row"></div>');
+		     }
             // Build our rows
             this.build_rows();
         },
 
         update: function() {
-            var table_rows  = this.el.find('tr:has("td")'),
+            var table_rows  = this.el.find('.freeform-grid-row'),
                 my          = this;
             this.num_rows   = table_rows.length;
             this.rows       = [];
@@ -60,6 +63,7 @@
                     data.push($(cell).val());
                 });
                 my.rows.push(data);
+                $(row).find('.freeform-grid-row-number').text(i+1);
             });
             this.master_field.val(JSON.stringify(this.rows));
         },
@@ -67,19 +71,26 @@
         build_rows: function(rows) {
             var my          = this,
                 data        = (rows == undefined) ? this.rows : rows,
-                num_rows    = this.el.find('tr:has("td")').length;
+                num_rows    = this.el.find('.freeform-grid-row').length;
 
             $(data).each(function(i,row) {
                 row_code = my.row_base.clone();
+                var title_code =  my.title_tmpl;
+                row_code.append(title_code);
                 var del_code = (num_rows+1 <= my.minrows) ? '<td></td>' : my.delete_row_tmpl.format('');
                 row_code.append(del_code);
                 $(my.headings).each(function(j,obj) {
                     var val = (row[j] != undefined) ? row[j] : '';
-                    cell_code = my.cell_tmpl.format(obj.heading.toLowerCase().replace(' ', '_'), val);
+                    if (this.vertical_fields) {
+						cell_code = my.cell_tmpl.format(obj.heading,obj.heading.toLowerCase().replace(/[^a-zA-Z0-9]/gi, '_'), val, (this.validate_cells ? 'required' : ''));
+                    } else {
+                    	cell_code = my.cell_tmpl.format(encodeURIComponent(obj.heading.toLowerCase().replace(/[^a-zA-Z0-9]/gi, '_')), val, (this.validate_cells ? 'required' : ''));	
+                    }
+                    
                     row_code.append(cell_code);
-                });
+                }.bind(this));
                 my.el.append(row_code);
-            });
+            }.bind(this));
 
             this.update();
         }

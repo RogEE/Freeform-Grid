@@ -151,6 +151,10 @@ class Freeform_grid_freeform_ft extends Freeform_base_ft {
         	'name'		=> $this->field_name,
         	'minrows'	=> $this->minrows,
         	'maxrows'	=> $this->maxrows,
+        	'validate_cells' => $this->validate_cells,
+        	'vertical_fields' => $this->vertical_fields,
+        	'add_row_button_text' => $this->add_row_button_text,
+        	'row_title' => $this->row_title,
         	'headers'	=> json_encode($this->headers),
         	'rows'		=> ($data == '') ? '['.implode(',', $default_rows).']' : $data,
 			'delete_button_src' => URL_THIRD_THEMES.'freeform/images/custom_images/delete.png'
@@ -212,6 +216,26 @@ class Freeform_grid_freeform_ft extends Freeform_base_ft {
         	))
         );
 
+        // Add new row button text settings
+        ee()->table->add_row(
+        	lang('settings_add_row_button_text'),
+        	form_input(array(
+        		'name'		=> 'add_row_button_text',
+        		'id'		=> 'add_row_button_text',
+        		'value'		=> (isset($data['add_row_button_text'])) ? $data['add_row_button_text'] : 'Add Row'
+        	))
+        );
+
+        ee()->table->add_row(
+        	lang('settings_row_title'),
+        	form_input(array(
+        		'name'		=> 'row_title',
+        		'id'		=> 'row_title',
+        		'value'		=> (isset($data['row_title'])) ? $data['row_title'] : 'Row'
+        	))
+        );
+
+
         // Should we validate all cells?
         ee()->table->add_row(
         	lang('settings_validate_cells') .
@@ -225,6 +249,21 @@ class Freeform_grid_freeform_ft extends Freeform_base_ft {
         		'checked'	=> (isset($data['validate_cells'])) ? ($data['validate_cells'] === 'y') : FALSE
         	))
         );
+
+        // Show fields vertically
+        ee()->table->add_row(
+        	lang('settings_vertical_fields') .
+	        	'<div class="subtext">' .
+	        	    lang('settings_vertical_fields_desc') .
+	        	'</div>',
+        	form_checkbox(array(
+        		'name'		=> 'vertical_fields',
+        		'id'		=> 'vertical_fields',
+        		'value'		=> 'y',
+        		'checked'	=> (isset($data['vertical_fields'])) ? ($data['vertical_fields'] === 'y') : FALSE
+        	))
+        );
+
     }
     //END display_settings
 
@@ -236,12 +275,18 @@ class Freeform_grid_freeform_ft extends Freeform_base_ft {
         $min_rows = ee()->input->post('min_rows');
         $max_rows = ee()->input->post('max_rows');
         $validate_cells = ee()->input->post('validate_cells');
+        $vertical_fields = ee()->input->post('vertical_fields');
+        $add_row_button_text = ee()->input->post('add_row_button_text');
+        $row_title = ee()->input->post('row_title');
 
         return array(
             'column_headers' 	=> !empty($column_headers) ? $column_headers : $this->default_column_headers,
             'min_rows'			=> is_numeric($min_rows) ? $min_rows : $this->default_min_rows,
             'max_rows'			=> is_numeric($max_rows) ? $max_rows : $this->default_max_rows,
-            'validate_cells'	=> $validate_cells === 'y' ? $validate_cells : ''
+            'validate_cells'	=> $validate_cells === 'y' ? $validate_cells : '',
+            'vertical_fields'	=> $vertical_fields === 'y' ? $vertical_fields : '',
+            'add_row_button_text'	=> $add_row_button_text ? $add_row_button_text : 'Add Row',
+            'row_title'	=> $row_title ? $row_title : 'Row'
         );
     }
     //END save_settings
@@ -367,6 +412,17 @@ class Freeform_grid_freeform_ft extends Freeform_base_ft {
     	$this->validate_cells = isset($this->settings['validate_cells']) ?
 								$this->settings['validate_cells'] :
 								FALSE;
+		$this->vertical_fields = isset($this->settings['vertical_fields']) ?
+								$this->settings['vertical_fields'] :
+								FALSE;
+		$this->add_row_button_text = isset($this->settings['add_row_button_text']) ?
+								$this->settings['add_row_button_text'] :
+								FALSE;
+
+		$this->row_title = isset($this->settings['row_title']) ?
+								$this->settings['row_title'] :
+								FALSE;
+
 
 		return TRUE;
     }
