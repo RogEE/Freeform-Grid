@@ -22,8 +22,20 @@ $lang = array(
 	'settings_validate_cells' =>
 	'Validate All Cells',
 
+	'settings_vertical_fields' =>
+	'Show Fields Vertically',
+
 	'settings_validate_cells_desc' =>
 	'Should all grid cells have content in order to be valid?',
+
+	'settings_vertical_fields_desc' =>
+	'Show fields separatly rather than in a table?',
+
+	'settings_add_row_button_text' =>
+	'Add row button text',
+
+	'settings_row_title' =>
+	'Row title',
 
 	'error_less_than_minrows' =>
 	'The minimum number of rows (%num%) has not been submitted.',
